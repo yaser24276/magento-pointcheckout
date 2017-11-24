@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Imena_PointCheckout>
+      <active>true</active>
+      <codePool>local</codePool>
+      <version>0.1.1</version>
+    </Imena_PointCheckout>
+  </modules>
+</config>
