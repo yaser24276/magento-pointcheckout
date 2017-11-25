@@ -174,7 +174,7 @@ class Imena_PointCheckout_Model_Payment extends Mage_Payment_Model_Method_Abstra
      *
      * @return Mage_Payment_Helper_Data
      */
-    private function _getHelper()
+    protected function _getHelper()
     {
         return Mage::helper('pointcheckout');
     }

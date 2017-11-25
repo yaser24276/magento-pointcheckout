@@ -20,11 +20,6 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
      */
     const STAGING_API_END_POINT = "https://checkout.staging.pointcheckout.com";
 
-    /**
-     * API VALIDATION END POINT
-     * GetPayment : http://pay.dev.pointcheckout.com:8080/pointcheckout-api/v1/checkout/ef0e-9da2-4491-82e6-63fd494
-     */
-    const API_VALIDATION_END_POINT = "http://pay.dev.pointcheckout.com:8080/pointcheckout-api/v1/checkout/##TOKEN##/";
 
     /**
      * Return url that will be used to check the status of the payment
@@ -199,6 +194,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         try {
             $request = $client->request();
             $body = $request->getBody();
+
             $data = json_decode($body, true);
             $success = false;
             if ($request->getStatus() == "200") {
