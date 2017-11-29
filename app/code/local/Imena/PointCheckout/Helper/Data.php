@@ -128,37 +128,44 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         $url = $endpoint . $api_function;
 
         $client->setMethod("POST")->setUri($url);
-        $client->setHeaders([
+        $headers = [
             "Content-Type" => "application/json",
             "Api-Key" => $api_key,
             "Api-Secret" => $api_secret, //// we shouldn't ever ever ever ever expose private keys / secret keys .
-            "Api-Signature" => $signature,
-            "Powered-By" => "Magento-" . Mage::getEdition() . "-" . Mage::getVersion()
-        ]);
-
+            //"Api-Signature" => $signature,
+            //"Powered-By" => "Magento-" . Mage::getEdition() . "-" . Mage::getVersion()
+        ];
+        $client->setHeaders($headers);
         $client->setRawData($body);
+        $this->log($url);
+        $this->log($body);
+        $this->log($headers);
         try {
             $request = $client->request();
             $body = $request->getBody();
             $data = json_decode($body, true);
             if ($request->getStatus() == "200") {
+                $this->log($data);
                 if ($data["success"] == true) {
-                    $checkoutId = $data["result"]["checkoutId"];
-                    Mage::getSingleton("core/session")->setData("checkoutId", $checkoutId);
+                    $checkoutKey = $data["result"]["checkoutKey"];
+                    Mage::getSingleton("core/session")->setData("checkoutKey", $checkoutKey);
+                    Mage::getSingleton("core/session")->setData("checkoutId", $data["result"]["checkoutId"]);
                     // should I save the referenceId as comment ? maybe later
-                    $redirect_url = $endpoint . $api_function . "/" . $checkoutId;
+                    $redirect_url = $endpoint . "/checkout/" . $checkoutKey;
+                    $this->log("redirect url : {$redirect_url}");
                     return $redirect_url;
                 } else {
                     throw new \Exception($data["description"]);
                 }
             } else {
+                $this->log($request);
                 throw new \Exception("got a response code {$request->getStatus()}");
             }
         } catch (\Exception $e) {
             Mage::logException($e);
             Mage::throwException(
                 $this->__(
-                    "We're sorry, an error has occurred while completing your request : " . $e->getMessage()
+                    "We're sorry, an error has occurred while completing your request : " . $e->getMessage() . " " . $e->getTraceAsString()
                 )
             );
         }
@@ -183,13 +190,13 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $url = $endpoint . $api_function . "/" . $checkoutId;
         $client->setMethod("GET")->setUri($url);
-        $client->setHeaders(array(
+        $headers = [
             "Content-Type" => "application/json",
             "Api-Key" => $api_key,
             "Api-Secret" => $api_secret, //// we shouldn't ever ever ever ever expose private keys / secret keys .
-            "Powered-By" => "Magento-" . Mage::getEdition() . "-" . Mage::getVersion()
-        ));
-
+            //"Powered-By" => "Magento-" . Mage::getEdition() . "-" . Mage::getVersion()
+        ];
+        $client->setHeaders($headers);
 
         try {
             $request = $client->request();
@@ -198,6 +205,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
             $data = json_decode($body, true);
             $success = false;
             if ($request->getStatus() == "200") {
+                $this->log($data);
                 if ($data["success"] == true) {
                     $status = $data["result"]["status"];
                     $order = $this->getOrder();
@@ -247,9 +255,11 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                     }
                 } else {
                     throw new \Exception("data was received : " . json_encode($data));
+                    $this->log($request);
                 }
             } else {
                 throw new \Exception("got a response code {$request->getStatus()}");
+                $this->log($request);
             }
         } catch (\Exception $e) {
             Mage::logException($e);
@@ -352,5 +362,11 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
     private function number_format($number, $decimal = 2)
     {
         return str_replace(",", "", number_format(abs($number), $decimal));
+    }
+
+
+    private function log($message)
+    {
+        return Mage::log($message,null,"pointcheckout.log");
     }
 }

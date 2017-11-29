@@ -21,7 +21,8 @@ class Imena_PointCheckout_IndexController extends Mage_Core_Controller_Front_Act
 
     public function ReturnAction()
     {
-        $checkoutId = Mage::getSingleton("core/session")->getCheckoutId();
+
+        $checkoutId = $this->getRequest()->getParam("checkout");
         if($checkoutId){
             /** @var Imena_PointCheckout_Helper_Data $helper */
             $helper = Mage::helper("pointcheckout");
