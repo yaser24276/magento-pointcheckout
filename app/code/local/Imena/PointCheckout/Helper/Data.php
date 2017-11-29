@@ -13,12 +13,12 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Live API END POINT
      */
-    const LIVE_API_END_POINT = "https://checkout.pointcheckout.com";
+    const LIVE_API_END_POINT = "https://pay.pointcheckout.com";
 
     /**
      * Staging API END POINT
      */
-    const STAGING_API_END_POINT = "https://checkout.staging.pointcheckout.com";
+    const STAGING_API_END_POINT = "https://pay.staging.pointcheckout.com";
 
 
     /**
