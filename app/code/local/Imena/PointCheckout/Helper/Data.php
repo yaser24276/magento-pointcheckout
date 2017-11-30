@@ -154,7 +154,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                     $redirect_url = $endpoint . "/checkout/" . $checkoutKey;
                     $this->log("redirect url : {$redirect_url}");
                     /// log checkout key to admin view order page
-                    $message = "PointCheckout key : {$checkoutKey} \n PointCheckout Id : {$data["result"]["checkoutId"]} \n Payment Url : {$redirect_url} ";
+                    $message = "PointCheckout key : {$checkoutKey} <br/> PointCheckout Id : {$data["result"]["checkoutId"]} <br/> Payment Url : {$redirect_url} ";
                     $commentHistory = $order->addStatusHistoryComment($message);
                     $commentHistory->setIsVisibleOnFront(0);
                     $order->save();
@@ -216,24 +216,24 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                     $order = $this->getOrder();
                     switch ($status) {
                         case $status == "CANCELLED":
-                            $status_message = "the customer cancelled the payment  .token Id: " . $checkoutId . "<br/> " . $data["result"]["checkoutKey"];
+                            $status_message = "The customer cancelled the payment , checkout Id: " . $checkoutId . "<br/> checkout key : " . $data["result"]["checkoutKey"];
                             $commentHistory = $order->addStatusHistoryComment($status_message, Mage_Sales_Model_Order::STATE_CANCELED);
-                            $commentHistory->setIsVisibleOnFront(1);
+                            $commentHistory->setIsVisibleOnFront(0);
                             $order->cancel();
                             $order->save();
                             $success = false;
                             break;
                         case $status == "FAILED":
-                            $status_message = "failed to pay .token Id: " . $checkoutId . "<br/> " . $data["result"]["description"];
+                            $status_message = "Customer failed to pay <br/> " . $data["result"]["description"];
                             $commentHistory = $order->addStatusHistoryComment($status_message, Mage_Sales_Model_Order::STATE_CANCELED);
-                            $commentHistory->setIsVisibleOnFront(1);
+                            $commentHistory->setIsVisibleOnFront(0);
                             $order->save();
                             $success = false;
                             break;
                         case $status == "PAID":
-                            $status_message = "payment Id: " . $data["result"]["checkoutId"] . " has been captured <br/> " . $data["result"]["checkoutKey"];
+                            $status_message = "Customer paid  , PointCheckout Id: " . $data["result"]["checkoutId"] . " has been captured <br/> " . $data["result"]["checkoutKey"];
                             $commentHistory = $order->addStatusHistoryComment($status_message, Mage_Sales_Model_Order::STATE_PROCESSING);
-                            $commentHistory->setIsVisibleOnFront(1);
+                            $commentHistory->setIsVisibleOnFront(0);
                             $order->save();
                             if ($order->getCanSendNewEmailFlag()) {
                                 $order->sendNewOrderEmail();
