@@ -154,7 +154,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                     $redirect_url = $endpoint . "/checkout/" . $checkoutKey;
                     $this->log("redirect url : {$redirect_url}");
                     /// log checkout key to admin view order page
-                    $message = "PointCheckout key : {$checkoutKey} <br/> PointCheckout Id : {$data["result"]["checkoutId"]} <br/> Payment Url : {$redirect_url} ";
+                    $message = "PointCheckout key : {$checkoutKey} <br/> PointCheckout Id : {$data["result"]["checkoutId"]} <br/> <a href='{$redirect_url}'>Payment link</a> ";
                     $commentHistory = $order->addStatusHistoryComment($message);
                     $commentHistory->setIsVisibleOnFront(0);
                     $order->save();
