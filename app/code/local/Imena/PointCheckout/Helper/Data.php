@@ -153,6 +153,11 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                     // should I save the referenceId as comment ? maybe later
                     $redirect_url = $endpoint . "/checkout/" . $checkoutKey;
                     $this->log("redirect url : {$redirect_url}");
+                    /// log checkout key to admin view order page
+                    $message = "PointCheckout key : {$checkoutKey} \n PointCheckout Id : {$data["result"]["checkoutId"]} \n Payment Url : {$redirect_url} ";
+                    $commentHistory = $order->addStatusHistoryComment($message);
+                    $commentHistory->setIsVisibleOnFront(0);
+                    $order->save();
                     return $redirect_url;
                 } else {
                     throw new \Exception($data["description"]);
