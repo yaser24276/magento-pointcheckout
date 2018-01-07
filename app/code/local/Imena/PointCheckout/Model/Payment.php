@@ -32,7 +32,7 @@ class Imena_PointCheckout_Model_Payment extends Mage_Payment_Model_Method_Abstra
 
 
     /**
-     * @var Mage_Cusstomer_Model_Customer
+     * @var Mage_Customer_Model_Customer
      */
     protected $customer  ;
 
@@ -43,7 +43,17 @@ class Imena_PointCheckout_Model_Payment extends Mage_Payment_Model_Method_Abstra
      */
     public function isAvailable($quote = null)
     {
-        // $this->customer = $this->getCustomer(); /// made for future use so I can check customer groups
+        /// this is going to be cached , please tell merchants to clear cache after changing this options
+        $selectedCustomerGroups = $this->isSelectedCustomerGroupsEnabled(); 
+        $this->customer = $this->getCustomer();
+        if($selectedCustomerGroups && $this->customer instanceof Mage_Customer_Model_Customer ){ /// user is logged in and we have selected groups
+            $groupId = $this->customer->getGroupId();
+            if(!in_array($groupId,$selectedCustomerGroups)){
+                return false; // it will disable the payment method
+            }
+        }else{ /// user isn't logged in and we have selected groups , point checkout shouldn't be displayed
+            return false; // it will disable the payment method
+        }
         return parent::isAvailable($quote);
     }
 
@@ -250,6 +260,22 @@ class Imena_PointCheckout_Model_Payment extends Mage_Payment_Model_Method_Abstra
         $adapter->setOptions($this->_allowedParams);
         $client->setAdapter($adapter);
         return $client;
+    }
+
+    /**
+     * @return bool|array
+     */
+    public function isSelectedCustomerGroupsEnabled()
+    {
+        /** @var Imena_PointCheckout_Helper_Data  $helper */
+        $helper = $this->_getHelper();
+        $isSelectedCustomerGroupsEnabled = $helper->getStoreConfig("allowspecific_customergroups");
+        if($isSelectedCustomerGroupsEnabled){
+            $selectedCustomerGroups  = $helper->getStoreConfig("specificcustomergroups");
+            return explode(",",$selectedCustomerGroups);
+
+        }
+        return false;
     }
 
 }
