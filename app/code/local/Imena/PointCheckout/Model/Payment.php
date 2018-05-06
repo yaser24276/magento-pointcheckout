@@ -46,14 +46,16 @@ class Imena_PointCheckout_Model_Payment extends Mage_Payment_Model_Method_Abstra
         /// this is going to be cached , please tell merchants to clear cache after changing this options
         $selectedCustomerGroups = $this->isSelectedCustomerGroupsEnabled(); 
         $this->customer = $this->getCustomer();
-        if($selectedCustomerGroups && $this->customer instanceof Mage_Customer_Model_Customer ){ /// user is logged in and we have selected groups
+        if($selectedCustomerGroups){
+            if($this->customer instanceof Mage_Customer_Model_Customer ){ /// user is logged in and we have selected groups
             $groupId = $this->customer->getGroupId();
-            if(!in_array($groupId,$selectedCustomerGroups)){
-                return false; // it will disable the payment method
+                if(!in_array($groupId,$selectedCustomerGroups)){
+                    return false; // it will disable the payment method
+                }
+            }else{/// user isn't logged in and we have selected groups , point checkout shouldn't be displayed
+               return false; // it will disable the payment method
             }
-        }else{ /// user isn't logged in and we have selected groups , point checkout shouldn't be displayed
-            return false; // it will disable the payment method
-        }
+        }// if selected groups is not enabled then pointcheckout would be disblayed within parent check
         return parent::isAvailable($quote);
     }
 
