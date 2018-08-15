@@ -18,7 +18,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Staging API END POINT
      */
-    const STAGING_API_END_POINT = "https://pay.staging.pointcheckout.com";
+    const TEST_API_END_POINT = "https://pay.test.pointcheckout.com";
 
 
     /**
@@ -123,7 +123,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         {
             $endpoint = self::LIVE_API_END_POINT;
         }else{
-            $endpoint = self::STAGING_API_END_POINT;
+            $endpoint = self::TEST_API_END_POINT;
         }
         $url = $endpoint . $api_function;
 
@@ -191,7 +191,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         {
             $endpoint = self::LIVE_API_END_POINT;
         }else{
-            $endpoint = self::STAGING_API_END_POINT;
+            $endpoint = self::TEST_API_END_POINT;
         }
         $url = $endpoint . $api_function . "/" . $checkoutId;
         $client->setMethod("GET")->setUri($url);
