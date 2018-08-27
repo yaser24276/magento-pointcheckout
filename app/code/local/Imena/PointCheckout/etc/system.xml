@@ -37,14 +37,14 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </api_key>
-                        <secret_key translate="label">
-                            <label>API Secret Key</label>
+                        <api_secret translate="label">
+                            <label>API Secret</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </secret_key>
+                        </api_secret>
                         <allowspecific translate="label">
                             <label>Payment Applicable From</label>
                             <frontend_type>select</frontend_type>
@@ -67,7 +67,7 @@
                             </depends>
                         </specificcountry>
                         <allowspecific_customergroups translate="label">
-                            <label>Payment Applicable From Specific Customer groups</label>
+                            <label>Restrict to specific customer groups</label>
                             <frontend_type>select</frontend_type>
                             <sort_order>6</sort_order>
                             <source_model>adminhtml/system_config_source_yesno</source_model>

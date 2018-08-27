@@ -13,14 +13,14 @@ class Imena_PointCheckout_Model_System_Config_Source_Envsource
     {
         if(self::STAGING){
             return array(
-                array('value' => 1, 'label'=>'Live'),
                 array('value' => 0, 'label'=>'Test'),
+                array('value' => 1, 'label'=>'Live'),
                 array('value' => 2, 'label'=>'Staging'),
             );
         }else{
             return array(
-                array('value' => 1, 'label'=>'Live'),
                 array('value' => 0, 'label'=>'Test'),
+                array('value' => 1, 'label'=>'Live'),
             );
         }
     }

@@ -110,7 +110,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         $body = json_encode($body);
 
         $api_key = $this->getStoreConfig("api_key");
-        $api_secret = $this->getStoreConfig("secret_key");
+        $api_secret = $this->getStoreConfig("api_secret");
         /*
         $use_proxy = Mage::getStoreConfig("payment/pointcheckout/use_proxy");
         $host = $port = "";
@@ -126,10 +126,10 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         if($this->getStoreConfig("system_mode") == 1)
         {
             $endpoint = self::LIVE_API_END_POINT;
-        }else if($this->getStoreConfig("system_mode") == 0){
-            $endpoint = self::TEST_API_END_POINT;
-        }else{
+        }else if($this->getStoreConfig("system_mode") == 2){
             $endpoint = self::STAGING_API_END_POINT;
+        }else{
+            $endpoint = self::TEST_API_END_POINT;
         }
         $url = $endpoint . $api_function;
 
@@ -188,16 +188,16 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
     public function validateToken($checkoutId)
     {
         $api_key = $this->getStoreConfig("api_key");
-        $api_secret = $this->getStoreConfig("secret_key");
+        $api_secret = $this->getStoreConfig("api_secret");
         $client = $this->_getHttpClient();
         $api_function = "/api/v1.0/checkout";
         if($this->getStoreConfig("system_mode") == 1)
         {
             $endpoint = self::LIVE_API_END_POINT;
-        }else if($this->getStoreConfig("system_mode") == 0){
-            $endpoint = self::TEST_API_END_POINT;
-        }else{
+        }else if($this->getStoreConfig("system_mode") == 2){
             $endpoint = self::STAGING_API_END_POINT;
+        }else{
+            $endpoint = self::TEST_API_END_POINT;
         }
         $url = $endpoint . $api_function . "/" . $checkoutId;
         $client->setMethod("GET")->setUri($url);
