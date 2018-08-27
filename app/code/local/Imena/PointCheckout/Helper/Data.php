@@ -232,7 +232,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                             break;
                         case $status == "PAID":
                             $status_message = "Customer paid  , PointCheckout Id: " . $data["result"]["checkoutId"] . " has been captured <br/> " . $data["result"]["checkoutKey"];
-                            $commentHistory = $order->addStatusHistoryComment($status_message, Mage_Sales_Model_Order::STATE_PROCESSING);
+                            $commentHistory = $order->addStatusHistoryComment($status_message, $this->getStoreConfig("payment_success_status"));
                             $commentHistory->setIsVisibleOnFront(0);
                             $order->save();
                             if ($order->getCanSendNewEmailFlag()) {
