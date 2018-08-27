@@ -35,6 +35,9 @@
             </pointcheckout>
         </blocks>
         <models>
+            <imena_pointcheckout>
+                <class>Imena_PointCheckout_Model</class>
+            </imena_pointcheckout>
             <pointcheckout>
                 <class>Imena_PointCheckout_Model</class>
                 <resourceModel>pointcheckout_mysql4</resourceModel>

@@ -16,10 +16,14 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
     const LIVE_API_END_POINT = "https://pay.pointcheckout.com";
 
     /**
-     * Staging API END POINT
+     * TEST API END POINT
      */
     const TEST_API_END_POINT = "https://pay.test.pointcheckout.com";
 
+    /**
+     * Staging API END POINT
+     */
+    const STAGING_API_END_POINT = "https://pay.staging.pointcheckout.com";
 
     /**
      * Return url that will be used to check the status of the payment
@@ -119,11 +123,13 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
 
         $client = $this->_getHttpClient();
         $api_function = "/api/v1.0/checkout";
-        if($this->getStoreConfig("live") == true)
+        if($this->getStoreConfig("system_mode") == 'Live')
         {
             $endpoint = self::LIVE_API_END_POINT;
-        }else{
+        }else if($this->getStoreConfig("system_mode") == 'Test'){
             $endpoint = self::TEST_API_END_POINT;
+        }else{
+            $endpoint = self::STAGING_API_END_POINT;
         }
         $url = $endpoint . $api_function;
 
@@ -131,9 +137,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         $headers = [
             "Content-Type" => "application/json",
             "Api-Key" => $api_key,
-            "Api-Secret" => $api_secret, //// we shouldn't ever ever ever ever expose private keys / secret keys .
-            //"Api-Signature" => $signature,
-            //"Powered-By" => "Magento-" . Mage::getEdition() . "-" . Mage::getVersion()
+            "Api-Secret" => $api_secret, 
         ];
         $client->setHeaders($headers);
         $client->setRawData($body);
@@ -187,11 +191,13 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         $api_secret = $this->getStoreConfig("secret_key");
         $client = $this->_getHttpClient();
         $api_function = "/api/v1.0/checkout";
-        if($this->getStoreConfig("live") == true)
+        if($this->getStoreConfig("system_mode") == 'Live')
         {
             $endpoint = self::LIVE_API_END_POINT;
-        }else{
+        }else if($this->getStoreConfig("system_mode") == 'Test'){
             $endpoint = self::TEST_API_END_POINT;
+        }else{
+            $endpoint = self::STAGING_API_END_POINT;
         }
         $url = $endpoint . $api_function . "/" . $checkoutId;
         $client->setMethod("GET")->setUri($url);
