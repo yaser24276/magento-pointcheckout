@@ -123,10 +123,10 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
 
         $client = $this->_getHttpClient();
         $api_function = "/api/v1.0/checkout";
-        if($this->getStoreConfig("system_mode") == 'Live')
+        if($this->getStoreConfig("system_mode") == 1)
         {
             $endpoint = self::LIVE_API_END_POINT;
-        }else if($this->getStoreConfig("system_mode") == 'Test'){
+        }else if($this->getStoreConfig("system_mode") == 0){
             $endpoint = self::TEST_API_END_POINT;
         }else{
             $endpoint = self::STAGING_API_END_POINT;
@@ -164,11 +164,11 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                     $order->save();
                     return $redirect_url;
                 } else {
-                    throw new \Exception($data["description"]);
+                    throw new \Exception("ERROR : " . $data["error"]);
                 }
             } else {
                 $this->log($request);
-                throw new \Exception("got a response code {$request->getStatus()}");
+                throw new \Exception("ERROR : " . $data["error"]." -- got a response code {$request->getStatus()}");
             }
         } catch (\Exception $e) {
             Mage::logException($e);
@@ -191,10 +191,10 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         $api_secret = $this->getStoreConfig("secret_key");
         $client = $this->_getHttpClient();
         $api_function = "/api/v1.0/checkout";
-        if($this->getStoreConfig("system_mode") == 'Live')
+        if($this->getStoreConfig("system_mode") == 1)
         {
             $endpoint = self::LIVE_API_END_POINT;
-        }else if($this->getStoreConfig("system_mode") == 'Test'){
+        }else if($this->getStoreConfig("system_mode") == 0){
             $endpoint = self::TEST_API_END_POINT;
         }else{
             $endpoint = self::STAGING_API_END_POINT;
@@ -265,11 +265,11 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                             break;
                     }
                 } else {
-                    throw new \Exception("data was received : " . json_encode($data));
+                    throw new \Exception("ERROR : " . $data["error"]);
                     $this->log($request);
                 }
             } else {
-                throw new \Exception("got a response code {$request->getStatus()}");
+                throw new \Exception("ERROR : " . $data["error"]." -- got a response code {$request->getStatus()}");
                 $this->log($request);
             }
         } catch (\Exception $e) {
