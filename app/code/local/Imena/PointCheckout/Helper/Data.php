@@ -64,7 +64,8 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         $body["shipping"] = $this->number_format($order->getShippingAmount(), 2);
         $body["discount"] = $this->number_format($order->getDiscountAmount(), 2);
         $body["subtotal"] = $this->number_format($order->getSubtotal(), 2);
-        $body["returnUrl"] = Mage::getUrl(self::RETURN_URL);
+        $body["successUrl"] = Mage::getUrl(self::RETURN_URL);
+        $body["failureUrl"] = Mage::getUrl(self::RETURN_URL);
 
         foreach ($order->getAllVisibleItems() as $item) {
             $i["name"] = $item->getName();
