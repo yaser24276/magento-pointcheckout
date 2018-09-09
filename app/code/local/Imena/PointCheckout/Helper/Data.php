@@ -76,9 +76,6 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $body["items"] = $items;
-
-        /*
-        $customer["title"]      = "";
         $customer["firstName"]  = $order->getCustomerFirstname();
         $customer["lastName"]   = $order->getCustomerLastname();
         $customer["email"]      = $order->getCustomerEmail();
@@ -106,7 +103,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $body["customer"]     = $customer;
-        */
+        
 
         $body = json_encode($body);
 
@@ -159,7 +156,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                     $redirect_url = $endpoint . "/checkout/" . $checkoutKey;
                     $this->log("redirect url : {$redirect_url}");
                     /// log checkout key to admin view order page
-                    $message = "PointCheckout key : {$checkoutKey} <br/> PointCheckout Id : {$data["result"]["checkoutId"]} <br/> <a href='{$redirect_url}' target='_blank'>Payment link</a> ";
+                    $message=$this->getOrderHistoryMessage($data["result"]["status"],0,$data["result"]["checkoutId"],$order);
                     $commentHistory = $order->addStatusHistoryComment($message);
                     $commentHistory->setIsVisibleOnFront(0);
                     $order->save();
@@ -223,7 +220,7 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                     $order = $this->getOrder();
                     switch ($status) {
                         case $status == "CANCELLED":
-                            $status_message = "The customer cancelled the payment , checkout Id: " . $checkoutId . "<br/> checkout key : " . $data["result"]["checkoutKey"];
+                            $status_message=$this->getOrderHistoryMessage($status ,0,$data["result"]["checkoutId"],$order);
                             $commentHistory = $order->addStatusHistoryComment($status_message, Mage_Sales_Model_Order::STATE_CANCELED);
                             $commentHistory->setIsVisibleOnFront(0);
                             $order->cancel();
@@ -231,14 +228,14 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
                             $success = false;
                             break;
                         case $status == "FAILED":
-                            $status_message = "Customer failed to pay <br/> " . $data["result"]["description"];
+                            $status_message=$this->getOrderHistoryMessage($status ,0,$data["result"]["checkoutId"],$order);
                             $commentHistory = $order->addStatusHistoryComment($status_message, Mage_Sales_Model_Order::STATE_CANCELED);
                             $commentHistory->setIsVisibleOnFront(0);
                             $order->save();
                             $success = false;
                             break;
                         case $status == "PAID":
-                            $status_message = "Customer paid  , PointCheckout Id: " . $data["result"]["checkoutId"] . " has been captured <br/> " . $data["result"]["checkoutKey"];
+                            $status_message=$this->getOrderHistoryMessage($status ,$data["result"]['cod'],$data["result"]["checkoutId"],$order);
                             $commentHistory = $order->addStatusHistoryComment($status_message, $this->getStoreConfig("payment_success_status"));
                             $commentHistory->setIsVisibleOnFront(0);
                             $order->save();
@@ -381,4 +378,36 @@ class Imena_PointCheckout_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return Mage::log($message,null,"pointcheckout.log");
     }
+    
+    
+    
+    /**
+     * 
+     */
+    private function getOrderHistoryMessage($orderStatus,$codAmount,$checkout,$order){
+        
+        $message = 'PointCheckout Status: <b>'.$orderStatus.'</b><br/>PointCheckout Transaction ID: <a href = "'.$this->getAdminUrl().'/merchant/transactions/'.$checkout.'/read" target="_blank" >'.$checkout.'</a><br/>';
+        if($codAmount>0){
+            $message.= '<b>[NOTICE] </b><i>COD Amount: <b>'.$codAmount.' '.$order->getOrderCurrency()->getCode().'</b></i>'."\n";
+        }
+        
+        return $message;
+    }
+    
+    /**
+     * 
+     */
+    
+    private function getAdminUrl(){
+        if ($this->getStoreConfig("system_mode") == '2'){
+            $_ADMIN_URL='https://admin.staging.pointcheckout.com';
+        }elseif(!$this->getStoreConfig("system_mode") == 1){
+            $_ADMIN_URL='https://admin.pointcheckout.com';
+        }else{
+            $_ADMIN_URL='https://admin.test.pointcheckout.com';
+        }
+        return $_ADMIN_URL;
+        
+    }
+    
 }
